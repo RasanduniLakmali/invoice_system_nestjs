@@ -1,35 +1,33 @@
-import { Body, Controller, Delete, Param, Patch, Post, UseGuards, Get } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Patch, Post, UseGuards, Get, ParseIntPipe } from '@nestjs/common';
 import { ItemsService } from './items.service';
-import { CreateItemDto } from './dto/items.create.dto';
+import { ItemCreateDto } from './dto/item-create-dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ItemUpdateDto } from './dto/item-update-dto';
 
 @Controller('items')
+@UseGuards(JwtAuthGuard)
 export class ItemsController {
 
-    constructor(private itemservice: ItemsService){}
+   constructor(private itemservice: ItemsService) { }
 
-    @UseGuards(JwtAuthGuard)
-    @Post("/create")
-    createItem(@Body() dto: CreateItemDto){
-       return this.itemservice.create(dto);
-    }
+   @Post("/")
+   createItem(@Body() dto: ItemCreateDto) {
+      return this.itemservice.create(dto);
+   }
 
-    @UseGuards(JwtAuthGuard)
-    @Patch("/update/:id")
-    updateItem(@Param('id') id: string , @Body() updateItemDto: CreateItemDto){
-       return this.itemservice.update(+id,updateItemDto);
-    }
+   @Patch("/:id")
+   updateItem(@Param('id',ParseIntPipe) id: number, @Body() itemUpdateDto: ItemUpdateDto) {
+      return this.itemservice.update(id, itemUpdateDto);
+   }
 
-    @UseGuards(JwtAuthGuard)
-    @Delete("/delete/:id")
-    deleteItem(@Param('id') id:string){
+   @Delete("/:id")
+   deleteItem(@Param('id',ParseIntPipe) id: number) {
+      return this.itemservice.delete(id);
+   }
 
-        return this.itemservice.delete(+id);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get("/getAll")
-    getAllItems(){
-       return this.itemservice.getAll()
-    }
+   @Get("/")
+   getAllItems() {
+      return this.itemservice.getAll()
+   }
+   
 }

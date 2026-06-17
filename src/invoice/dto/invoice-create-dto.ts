@@ -1,7 +1,7 @@
 import { IsNotEmpty } from "class-validator";
 import { InvoiceStatus } from "../enum/invoice.status.enum";
 
-export class CreateInvoiceDto {
+export class InvoiceCreateDto {
 
   @IsNotEmpty()
   customerId!: number;
